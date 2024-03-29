@@ -7,7 +7,9 @@ dataset = pd.read_csv('NicolasWalking.csv')
 data = dataset.iloc[:, :]
 labels = dataset.columns.tolist()
 
-windowSize = 50
+
+
+windowSize = 100
 datasetRoll = dataset.rolling(windowSize).mean()
 
 # Create subplots for X, Y, and Z axes
