@@ -2,14 +2,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-dataset = pd.read_csv('NicolasWalking.csv')
+dataset = pd.read_csv('BrandonWalking.csv')
 
 data = dataset.iloc[:, :]
 labels = dataset.columns.tolist()
 
 
 
-windowSize = 100
+windowSize = 50
 datasetRoll = dataset.rolling(windowSize).mean()
 
 # Create subplots for X, Y, and Z axes
