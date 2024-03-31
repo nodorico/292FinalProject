@@ -21,10 +21,12 @@ def segmentData(data):
 
 NdataWalking = segmentData(pd.read_csv('NicolasWalking.csv'))
 BdataWalking = segmentData(pd.read_csv('BrandonWalking.csv'))
-dataWalking = NdataWalking + BdataWalking
+RdataWalking = segmentData(pd.read_csv('RylanWalking.csv'))
+dataWalking = NdataWalking + BdataWalking + RdataWalking
 
 NdataJumping = segmentData(pd.read_csv('NicolasJumping.csv'))
 BdataJumping = segmentData(pd.read_csv('BrandonJumping.csv'))
+RdataJumping = segmentData(pd.read_csv('RylanJumping.csv'))
 dataJumping = NdataJumping + BdataJumping
 
 for segment in dataWalking:
@@ -64,6 +66,13 @@ with h5py.File('data.hdf5','a') as f:
 
     df = pd.read_csv('BrandonJumping.csv')
     subgroup.create_dataset(name='BrandonJumping', data=df)
+
+    subgroup = f['Rylan']
+    df = pd.read_csv('RylanWalking.csv')
+    subgroup.create_dataset(name='RylanWalking', data=df)
+
+    df = pd.read_csv('RylanJumping.csv')
+    subgroup.create_dataset(name='RylanJumping', data=df)
 
     with pd.HDFStore('data.hdf5') as store:
         # Store train_df and test_df in the HDF5 file
