@@ -5,8 +5,25 @@ import h5py
 
 # Load training and testing data from the HDF5 file
 with h5py.File('data.hdf5', 'r') as f:
-    train_data = f['dataset']['train'][:]
-    test_data = f['dataset']['test'][:]
+    train_data = f['dataset']['train']
+    axis0 = train_data['axis0'][:]
+    axis1 = train_data['axis1'][:]
+    block0_items = train_data['block0_items'][:]
+    block0_values = train_data['block0_values'][:]
+    block1_items = train_data['block1_items'][:]
+    block1_values = train_data['block1_values'][:]
+    train_data = pd.DataFrame(data=block0_values, columns=block0_items)
+    train_data.columns = ['Time (s)', 'Acceleration (m/s^2)', 'X', 'Y', 'Z']
+
+    test_data = f['dataset']['test']
+    axis0 = test_data['axis0'][:]
+    axis1 = test_data['axis1'][:]
+    block0_items = test_data['block0_items'][:]
+    block0_values = test_data['block0_values'][:]
+    block1_items = test_data['block1_items'][:]
+    block1_values = test_data['block1_values'][:]
+    test_data = pd.DataFrame(data=block0_values, columns=block0_items)
+    test_data.columns = ['Time (s)', 'Acceleration (m/s^2)', 'X', 'Y', 'Z']
 
 # Separate walking and jumping data for training and testing sets
 train_walking_data = train_data[train_data[:, -1] == b'walking'][:, :-1]
