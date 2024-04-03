@@ -25,11 +25,12 @@ with h5py.File('data.hdf5', 'r') as f:
     test_data = pd.DataFrame(data=block0_values, columns=block0_items)
     test_data.columns = ['Time (s)', 'Acceleration (m/s^2)', 'X', 'Y', 'Z']
 
+
 # Separate walking and jumping data for training and testing sets
-train_walking_data = train_data[train_data[:, -1] == b'walking'][:, :-1]
-train_jumping_data = train_data[train_data[:, -1] == b'jumping'][:, :-1]
-test_walking_data = test_data[test_data[:, -1] == b'walking'][:, :-1]
-test_jumping_data = test_data[test_data[:, -1] == b'jumping'][:, :-1]
+train_walking_data = train_data[train_data['Z'] == b'walking'].iloc[:, :-1]
+train_jumping_data = train_data[train_data['Z'] == b'jumping'].iloc[:, :-1]
+test_walking_data = test_data[test_data['Z'] == b'walking'].iloc[:, :-1]
+test_jumping_data = test_data[test_data['Z'] == b'jumping'].iloc[:, :-1]
 
 # Create rolling mean dataset for visualization
 windowSize = 50
@@ -92,5 +93,3 @@ axs[2, 1].legend()
 plt.tight_layout()
 plt.show()
 
-
-# show metadata 
