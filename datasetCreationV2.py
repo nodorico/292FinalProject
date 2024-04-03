@@ -61,7 +61,12 @@ with h5py.File('./dataset.h5', 'a') as hdf:
     test_group.create_dataset('test_data', data=test_data)
 
 with h5py.File('./dataset.h5', 'r') as hdf:
-   train_data = hdf['dataset/train/train_data']
-   test_data = hdf['dataset/testing/test_data']
-   print(f"Train Data: Shape = {train_data.shape}")
-   print(f"Test Data: Shape = {test_data.shape}")
+    def print_dataset(name, obj):
+        if isinstance(obj, h5py.Dataset):
+            print(f"Dataset: {name}, Shape: {obj.shape}")
+        elif isinstance(obj, h5py.Group):
+            print(f"Group: {name}")
+        else:
+            print(f"Unknown object: {name}")
+
+    hdf.visititems(print_dataset)
