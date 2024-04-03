@@ -11,6 +11,13 @@ nicolasJumping = pd.read_csv('NicolasJumping.csv')
 brandonJumping = pd.read_csv('BrandonJumping.csv')
 rylanJumping = pd.read_csv('RylanJumping.csv')
 
+nicolasWalking['Activity'] = 1
+brandonWalking['Activity'] = 1
+rylanWalking['Activity'] = 1
+nicolasJumping['Activity'] = 0
+brandonJumping['Activity'] = 0
+rylanJumping['Activity'] = 0
+
 with h5py.File('./dataset.h5','w') as hdf:
     nicolas = hdf.create_group('/Nicolas')
     nicolas.create_dataset('nicolasWalking', data=nicolasWalking.values)
@@ -24,9 +31,12 @@ with h5py.File('./dataset.h5','w') as hdf:
     rylan.create_dataset('rylanWalking', data=rylanWalking.values)
     rylan.create_dataset('rylanJumping', data=rylanJumping.values)
 
-datasetNames = ['nicolasWalking.csv','nicolasJumping.csv','rylanWalking.csv','rylanJumping.csv','brandonWalking.csv','brandonJumping.csv']
-datasets = [pd.read_csv(path) for path in datasetNames]
-combinedDatasets = pd.concat(datasets,axis=0, ignore_index=True)
+walking_data = pd.concat([nicolasWalking, brandonWalking, rylanWalking], ignore_index=True)
+jumping_data = pd.concat([nicolasJumping, brandonJumping, rylanJumping], ignore_index=True)
+combinedDatasets = pd.concat([walking_data, jumping_data], ignore_index=True)
+
+# Add labels to combined dataset
+combinedDatasets['Activity'] = combinedDatasets['Activity'].astype(int)
 
 
 time_seconds = combinedDatasets.iloc[:, 0]
@@ -46,8 +56,9 @@ train_size = int(0.9 * len(segmented))
 train_segments = segmented[:train_size]
 test_segments = segmented[train_size:]
 
-train_data = np.concatenate([segment.values for segment in train_segments])
-test_data = np.concatenate([segment.values for segment in test_segments])
+train_data = np.concatenate([segment['Activity'].values.reshape(-1, 1) for segment in train_segments])
+test_data = np.concatenate([segment['Activity'].values.reshape(-1, 1) for segment in test_segments])
+
 
 with h5py.File('./dataset.h5', 'a') as hdf:
 
