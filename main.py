@@ -84,4 +84,66 @@ axs[2, 1].set_xlabel('Timestamp')
 axs[2, 1].set_ylabel('Acceleration')
 axs[2, 1].legend()
 
+#Step 5 below:
+def normalize_features(df):
+    scaler = StandardScaler()
+    normalized_data = scaler.fit_transform(df)
+    normalized_df = pd.DataFrame(normalized_data, columns=df.columns)
+    return normalized_df
+
+features_w_train = pd.DataFrame(columns=['mean', 'std', 'max', 'min', 'variance', 'skewness', 'kurtosis'])
+
+features_w_train['mean'] = train_walking_roll.mean()
+features_w_train['std'] = train_walking_roll.std()
+features_w_train['max'] = train_walking_roll.max()
+features_w_train['min'] = train_walking_roll.min()
+features_w_train['variance'] = train_walking_roll.var()
+features_w_train['skewness'] = train_walking_roll.skew()
+features_w_train['kurtosis'] = train_walking_roll.kurt()
+
+features_w_test = pd.DataFrame(columns=['mean', 'std', 'max', 'min', 'variance', 'skewness', 'kurtosis'])
+
+features_w_test['mean'] = test_walking_roll.mean()
+features_w_test['std'] = test_walking_roll.std()
+features_w_test['max'] = test_walking_roll.max()
+features_w_test['min'] = test_walking_roll.min()
+features_w_test['variance'] = test_walking_roll.var()
+features_w_test['skewness'] = test_walking_roll.skew()
+features_w_test['kurtosis'] = test_walking_roll.kurt()
+
+features_j_train = pd.DataFrame(columns=['mean', 'std', 'max', 'min', 'variance', 'skewness', 'kurtosis'])
+
+features_j_train['mean'] = train_jumping_roll.mean()
+features_j_train['std'] = train_jumping_roll.std()
+features_j_train['max'] = train_jumping_roll.max()
+features_j_train['min'] = train_jumping_roll.min()
+features_j_train['variance'] = train_jumping_roll.var()
+features_j_train['skewness'] = train_jumping_roll.skew()
+features_j_train['kurtosis'] = train_jumping_roll.kurt()
+
+features_j_test = pd.DataFrame(columns=['mean', 'std', 'max', 'min', 'variance', 'skewness', 'kurtosis'])
+
+features_j_test['mean'] = test_jumping_roll.mean()
+features_j_test['std'] = test_jumping_roll.std()
+features_j_test['max'] = test_jumping_roll.max()
+features_j_test['min'] = test_jumping_roll.min()
+features_j_test['variance'] = test_jumping_roll.var()
+features_j_test['skewness'] = test_jumping_roll.skew()
+features_j_test['kurtosis'] = test_jumping_roll.kurt()
+
+train_features_w_normalized = normalize_features(features_w_train)
+test_features_w_normalized = normalize_features(features_w_test)
+
+train_features_j_normalized = normalize_features(features_j_train)
+test_features_j_normalized = normalize_features(features_j_test)
+
+# def print_summary_statistics(df, title=""):#for testing the features and normalized features...double check everything is right
+#     print(title)
+#     print("Mean:\n", df.mean())
+#     print("\nStandard Deviation:\n", df.std())
+# 
+# print_summary_statistics(features_w_train, "Original Walking Training Features Summary Statistics")
+# print_summary_statistics(train_features_w_normalized, "Normalized Walking Training Features Summary Statistics")
+#end of step 5
+
 plt.show()
