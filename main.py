@@ -28,53 +28,55 @@ test_jumping_roll = pd.DataFrame(test_jumping_data).rolling(windowSize).mean()
 # Create subplots for X, Y, and Z axes
 fig, axs = plt.subplots(3, 2, figsize=(30, 30))
 
+fig, axs = plt.subplots(3, 2, figsize=(30, 30))
+
 # Plot accelerometer data for training set - X-axis
-axs[0, 0].plot(train_walking_roll.iloc[:], train_walking_roll.iloc[:], label='Walking', color='blue')
-axs[0, 0].plot(train_jumping_roll.iloc[:], train_jumping_roll.iloc[:], label='Jumping', color='orange')
+axs[0, 0].plot(train_walking_roll, label='Walking', color='blue')
+axs[0, 0].plot(train_jumping_roll, label='Jumping', color='orange')
 axs[0, 0].set_title('Accelerometer Data for Training Set - X-axis')
 axs[0, 0].set_xlabel('Timestamp')
 axs[0, 0].set_ylabel('Acceleration')
-axs[0, 0].legend('Walking', 'Jumping')
+axs[0, 0].legend()
 
 # Plot accelerometer data for testing set - X-axis
-axs[0, 1].plot(test_walking_roll.iloc[:], test_walking_roll.iloc[:], label='Walking', color='blue')
-axs[0, 1].plot(test_jumping_roll.iloc[:], test_jumping_roll.iloc[:], label='Jumping', color='orange')
+axs[0, 1].plot(test_walking_roll, label='Walking', color='blue')
+axs[0, 1].plot(test_jumping_roll, label='Jumping', color='orange')
 axs[0, 1].set_title('Accelerometer Data for Testing Set - X-axis')
 axs[0, 1].set_xlabel('Timestamp')
 axs[0, 1].set_ylabel('Acceleration')
-axs[0, 1].legend('Walking', 'Jumping')
+axs[0, 1].legend()
 
 # Plot accelerometer data for training set - Y-axis
-axs[1, 0].plot(train_walking_roll.iloc[:], train_walking_roll.iloc[:], label='Walking', color='blue')
-axs[1, 0].plot(train_jumping_roll.iloc[:], train_jumping_roll.iloc[:], label='Jumping', color='orange')
+axs[1, 0].plot(train_walking_roll, label='Walking', color='blue')
+axs[1, 0].plot(train_jumping_roll, label='Jumping', color='orange')
 axs[1, 0].set_title('Accelerometer Data for Training Set - Y-axis')
 axs[1, 0].set_xlabel('Timestamp')
 axs[1, 0].set_ylabel('Acceleration')
-axs[1, 0].legend('Walking', 'Jumping')
+axs[1, 0].legend()
 
 # Plot accelerometer data for testing set - Y-axis
-axs[1, 1].plot(test_walking_roll.iloc[:], test_walking_roll.iloc[:], label='Walking', color='blue')
-axs[1, 1].plot(test_jumping_roll.iloc[:], test_jumping_roll.iloc[:], label='Jumping', color='orange')
+axs[1, 1].plot(test_walking_roll, label='Walking', color='blue')
+axs[1, 1].plot(test_jumping_roll, label='Jumping', color='orange')
 axs[1, 1].set_title('Accelerometer Data for Testing Set - Y-axis')
 axs[1, 1].set_xlabel('Timestamp')
 axs[1, 1].set_ylabel('Acceleration')
-axs[1, 1].legend('Walking', 'Jumping')
+axs[1, 1].legend()
 
 # Plot accelerometer data for training set - Z-axis
-axs[2, 0].plot(train_walking_roll.iloc[:], train_walking_roll.iloc[:], label='Walking', color='blue')
-axs[2, 0].plot(train_jumping_roll.iloc[:], train_jumping_roll.iloc[:], label='Jumping', color='orange')
+axs[2, 0].plot(train_walking_roll, label='Walking', color='blue')
+axs[2, 0].plot(train_jumping_roll, label='Jumping', color='orange')
 axs[2, 0].set_title('Accelerometer Data for Training Set - Z-axis')
 axs[2, 0].set_xlabel('Timestamp')
 axs[2, 0].set_ylabel('Acceleration')
-axs[2, 0].legend('Walking', 'Jumping')
+axs[2, 0].legend()
 
 # Plot accelerometer data for testing set - Z-axis
-axs[2, 1].plot(test_walking_roll.iloc[:], test_walking_roll.iloc[:], label='Walking', color='blue')
-axs[2, 1].plot(test_jumping_roll.iloc[:], test_jumping_roll.iloc[:], label='Jumping', color='orange')
+axs[2, 1].plot(test_walking_roll, label='Walking', color='blue')
+axs[2, 1].plot(test_jumping_roll, label='Jumping', color='orange')
 axs[2, 1].set_title('Accelerometer Data for Testing Set - Z-axis')
 axs[2, 1].set_xlabel('Timestamp')
 axs[2, 1].set_ylabel('Acceleration')
-axs[2, 1].legend('Walking', 'Jumping')
+axs[2, 1].legend()
 
 plt.tight_layout()
 plt.show()
