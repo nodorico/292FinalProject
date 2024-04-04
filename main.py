@@ -19,7 +19,7 @@ test_walking_data = test_data[test_labels == 1][:, :-1]    # Assuming 1 correspo
 test_jumping_data = test_data[test_labels == 0][:, :-1]
 
 # Create rolling mean dataset for visualization
-windowSize = 10
+windowSize = 500
 train_walking_roll = pd.DataFrame(train_walking_data).rolling(windowSize).mean()
 train_jumping_roll = pd.DataFrame(train_jumping_data).rolling(windowSize).mean()
 test_walking_roll = pd.DataFrame(test_walking_data).rolling(windowSize).mean()
