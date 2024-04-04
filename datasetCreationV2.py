@@ -56,8 +56,8 @@ train_size = int(0.9 * len(segmented))
 train_segments = segmented[:train_size]
 test_segments = segmented[train_size:]
 
-train_data = np.concatenate([segment['Activity'].values.reshape(-1, 1) for segment in train_segments])
-test_data = np.concatenate([segment['Activity'].values.reshape(-1, 1) for segment in test_segments])
+train_data = np.concatenate([segment.values for segment in train_segments])
+test_data = np.concatenate([segment.values for segment in test_segments])
 
 
 with h5py.File('./dataset.h5', 'a') as hdf:
