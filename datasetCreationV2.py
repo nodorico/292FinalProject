@@ -31,12 +31,11 @@ with h5py.File('./dataset.h5','w') as hdf:
 walking_data = pd.concat([nicolasWalking, brandonWalking, rylanWalking], ignore_index=True)
 jumping_data = pd.concat([nicolasJumping, brandonJumping, rylanJumping], ignore_index=True)
 # create new column for activity
-# walking_data
-# jumping_data
+walking_data['Activity'] = '0'
+jumping_data['Activity'] = '1'
+
 combinedDatasets = pd.concat([walking_data, jumping_data], ignore_index=True)
 
-# Add labels to combined dataset
-combinedDatasets['Activity'] = combinedDatasets['Activity'].astype(int)
 
 
 time_seconds = combinedDatasets.iloc[:, 0]
@@ -58,6 +57,13 @@ test_segments = segmented[train_size:]
 
 train_data = np.concatenate([segment.values for segment in train_segments])
 test_data = np.concatenate([segment.values for segment in test_segments])
+
+train_data = train_data.astype(np.float64)
+test_data = test_data.astype(np.float64)
+
+print(test_data[:])  # Print the first 5 rows of test_data
+print("\nTrain data:")
+print(train_data[:])
 
 
 with h5py.File('./dataset.h5', 'a') as hdf:
