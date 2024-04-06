@@ -42,7 +42,7 @@ test_walking_normalized = scaler.fit_transform(test_walking_roll)
 test_jumping_normalized = scaler.fit_transform(test_jumping_roll)
 
 # Create subplots for X, Y, and Z axes
-fig, axs = plt.subplots(3, 2, figsize=(50, 30))
+fig, axs = plt.subplots(4, 2, figsize=(50, 30))
 
 axs[0, 0].plot(train_walking_normalized[:, 0], label='Walking', color='blue')
 axs[0, 0].plot(train_jumping_normalized[:, 0], label='Jumping', color='orange')
@@ -90,6 +90,21 @@ axs[2, 1].set_title('Accelerometer Data for Testing Set - Z-axis')
 axs[2, 1].set_xlabel('Timestamp')
 axs[2, 1].set_ylabel('Acceleration')
 axs[2, 1].legend()
+
+axs[3, 0].plot(train_walking_normalized[:, 3], label='Walking', color='blue')
+axs[3, 0].plot(train_jumping_normalized[:, 3], label='Jumping', color='orange')
+axs[3, 0].set_title('Accelerometer Data for Training Set - Absolute')
+axs[3, 0].set_xlabel('Timestamp')
+axs[3, 0].set_ylabel('Acceleration')
+axs[3, 0].legend()
+
+# Plot accelerometer data for testing set - Z-axis
+axs[3, 1].plot(test_walking_normalized[:, 3], label='Walking', color='blue')
+axs[3, 1].plot(test_jumping_normalized[:, 3], label='Jumping', color='orange')
+axs[3, 1].set_title('Accelerometer Data for Testing Set - Absolute')
+axs[3, 1].set_xlabel('Timestamp')
+axs[3, 1].set_ylabel('Acceleration')
+axs[3, 1].legend()
 
 #Step 5 below:
 def normalize_features(df):
@@ -168,17 +183,17 @@ y_train = np.concatenate([np.ones(len(train_walking_roll)), np.zeros(len(train_j
 y_test = np.concatenate([np.ones(len(test_walking_roll)), np.zeros(len(test_jumping_roll))])
 
 # Select only the desired columns for X_train and X_test
-X_train = train_features.iloc[:, 1:4]  # Selecting columns 1 and 2 (second and third columns)
-X_test = test_features.iloc[:, 1:4]  # Selecting columns 1 and 2 (second and third columns)
+X_train_selected = train_features.iloc[:, 1:4]  # Selecting columns 1 and 2 (second and third columns)
+X_test_selected = test_features.iloc[:, 1:4]  # Selecting columns 1 and 2 (second and third columns)
 
 # Initialize Logistic Regression model
 logistic_model = LogisticRegression()
 
 # Train the model
-logistic_model.fit(X_train, y_train)
+logistic_model.fit(X_train_selected, y_train)
 
 # Predict on the test set
-y_pred = logistic_model.predict(X_test)
+y_pred = logistic_model.predict(X_test_selected)
 
 # Calculate accuracy
 accuracy = accuracy_score(y_test, y_pred)

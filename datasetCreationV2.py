@@ -11,8 +11,6 @@ nicolasJumping = pd.read_csv('NicolasJumping.csv')
 brandonJumping = pd.read_csv('BrandonJumping.csv')
 rylanJumping = pd.read_csv('RylanJumping.csv')
 
-
-
 with h5py.File('./dataset.h5','w') as hdf:
     nicolas = hdf.create_group('/Nicolas')
     nicolas.create_dataset('nicolasWalking', data=nicolasWalking)
@@ -26,8 +24,6 @@ with h5py.File('./dataset.h5','w') as hdf:
     rylan.create_dataset('rylanWalking', data=rylanWalking.values)
     rylan.create_dataset('rylanJumping', data=rylanJumping.values)
 
-
-
 walking_data = pd.concat([nicolasWalking, brandonWalking, rylanWalking], ignore_index=True)
 jumping_data = pd.concat([nicolasJumping, brandonJumping, rylanJumping], ignore_index=True)
 # create new column for activity
@@ -36,22 +32,22 @@ jumping_data['Activity'] = '1'
 
 combinedDatasets = pd.concat([walking_data, jumping_data], ignore_index=True)
 
-
-
 time_seconds = combinedDatasets.iloc[:, 0]
 
-# Find the index of the time corresponding to the end of a 5-second window
+sampling_frequency = 100  # Hz
 window_size_seconds = 5
-window_end_indices = time_seconds.searchsorted(
-    time_seconds.iloc[0] + np.arange(window_size_seconds, time_seconds.max(), window_size_seconds))
+window_size_samples = int(window_size_seconds * sampling_frequency)
+
+# Find the index of the time corresponding to the end of a 5-second window
+window_end_indices = np.arange(window_size_samples, len(time_seconds), window_size_samples)
 
 # Segment the data into 5-second windows
-segmented = [combinedDatasets.iloc[i:j] for i, j in
-                  zip([0] + list(window_end_indices), list(window_end_indices) + [len(combinedDatasets)])]
-
+segmented = [combinedDatasets.iloc[i:j] for i, j in zip([0] + list(window_end_indices), list(window_end_indices) + [len(combinedDatasets)])]
 np.random.shuffle(segmented)
 
 train_size = int(0.9 * len(segmented))
+
+print(len(segmented))
 train_segments = segmented[:train_size]
 test_segments = segmented[train_size:]
 
@@ -60,10 +56,6 @@ test_data = np.concatenate([segment.values for segment in test_segments])
 
 train_data = train_data.astype(np.float64)
 test_data = test_data.astype(np.float64)
-
-print(test_data[:])  # Print the first 5 rows of test_data
-print("\nTrain data:")
-print(train_data[:])
 
 
 with h5py.File('./dataset.h5', 'a') as hdf:
