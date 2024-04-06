@@ -20,7 +20,7 @@ test_walking_data = test_data[test_labels == 1][:, :-1]    # Assuming 1 correspo
 test_jumping_data = test_data[test_labels == 0][:, :-1]
 
 # Create rolling mean dataset for visualization
-windowSize = 500
+windowSize = 1000
 
 train_walking_roll = pd.DataFrame(train_walking_data).rolling(windowSize).mean().dropna()
 train_jumping_roll = pd.DataFrame(train_jumping_data).rolling(windowSize).mean().dropna()
@@ -183,8 +183,8 @@ y_train = np.concatenate([np.ones(len(train_walking_roll)), np.zeros(len(train_j
 y_test = np.concatenate([np.ones(len(test_walking_roll)), np.zeros(len(test_jumping_roll))])
 
 # Select only the desired columns for X_train and X_test
-X_train_selected = train_features.iloc[:, 1:4]  # Selecting columns 1 and 2 (second and third columns)
-X_test_selected = test_features.iloc[:, 1:4]  # Selecting columns 1 and 2 (second and third columns)
+X_train_selected = train_features.iloc[:, 1:4]
+X_test_selected = test_features.iloc[:, 1:4]
 
 # Initialize Logistic Regression model
 logistic_model = LogisticRegression()
