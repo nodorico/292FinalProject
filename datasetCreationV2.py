@@ -11,17 +11,12 @@ nicolasJumping = pd.read_csv('NicolasJumping.csv')
 brandonJumping = pd.read_csv('BrandonJumping.csv')
 rylanJumping = pd.read_csv('RylanJumping.csv')
 
-nicolasWalking['Activity'] = 1
-brandonWalking['Activity'] = 1
-rylanWalking['Activity'] = 1
-nicolasJumping['Activity'] = 0
-brandonJumping['Activity'] = 0
-rylanJumping['Activity'] = 0
+
 
 with h5py.File('./dataset.h5','w') as hdf:
     nicolas = hdf.create_group('/Nicolas')
-    nicolas.create_dataset('nicolasWalking', data=nicolasWalking.values)
-    nicolas.create_dataset('nicolasJumping', data=nicolasJumping.values)
+    nicolas.create_dataset('nicolasWalking', data=nicolasWalking)
+    nicolas.create_dataset('nicolasJumping', data=nicolasJumping)
 
     brandon = hdf.create_group('/Brandon')
     brandon.create_dataset('brandonWalking', data=brandonWalking.values)
@@ -31,8 +26,13 @@ with h5py.File('./dataset.h5','w') as hdf:
     rylan.create_dataset('rylanWalking', data=rylanWalking.values)
     rylan.create_dataset('rylanJumping', data=rylanJumping.values)
 
+
+
 walking_data = pd.concat([nicolasWalking, brandonWalking, rylanWalking], ignore_index=True)
 jumping_data = pd.concat([nicolasJumping, brandonJumping, rylanJumping], ignore_index=True)
+# create new column for activity
+# walking_data
+# jumping_data
 combinedDatasets = pd.concat([walking_data, jumping_data], ignore_index=True)
 
 # Add labels to combined dataset
