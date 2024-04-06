@@ -20,12 +20,12 @@ test_walking_data = test_data[test_labels == 1][:, :-1]    # Assuming 1 correspo
 test_jumping_data = test_data[test_labels == 0][:, :-1]
 
 # Create rolling mean dataset for visualization
-windowSize = 5
+windowSize = 500
 
-train_walking_roll = pd.DataFrame(train_walking_data).rolling(windowSize).mean()
-train_jumping_roll = pd.DataFrame(train_jumping_data).rolling(windowSize).mean()
-test_walking_roll = pd.DataFrame(test_walking_data).rolling(windowSize).mean()
-test_jumping_roll = pd.DataFrame(test_jumping_data).rolling(windowSize).mean()
+train_walking_roll = pd.DataFrame(train_walking_data).rolling(windowSize).mean().dropna()
+train_jumping_roll = pd.DataFrame(train_jumping_data).rolling(windowSize).mean().dropna()
+test_walking_roll = pd.DataFrame(test_walking_data).rolling(windowSize).mean().dropna()
+test_jumping_roll = pd.DataFrame(test_jumping_data).rolling(windowSize).mean().dropna()
 
 train_walking_roll = train_walking_roll.iloc[:,]
 train_jumping_roll = train_jumping_roll.iloc[:,]
@@ -157,17 +157,7 @@ test_features_j_normalized = normalize_features(features_j_test)
 #end of step 5
 
 # Step 6
-# Combine features and labels for training and testing sets
-train_walking_normalized = scaler.fit_transform(train_walking_data)
-train_jumping_normalized = scaler.fit_transform(train_jumping_data)
-test_walking_normalized = scaler.fit_transform(test_walking_data)
-test_jumping_normalized = scaler.fit_transform(test_jumping_data)
 
-# Recalculate rolling means after normalization
-train_walking_roll = pd.DataFrame(train_walking_normalized).rolling(windowSize).mean().dropna()
-train_jumping_roll = pd.DataFrame(train_jumping_normalized).rolling(windowSize).mean().dropna()
-test_walking_roll = pd.DataFrame(test_walking_normalized).rolling(windowSize).mean().dropna()
-test_jumping_roll = pd.DataFrame(test_jumping_normalized).rolling(windowSize).mean().dropna()
 
 # Concatenate DataFrames with continuous index
 train_features = pd.concat([train_walking_roll, train_jumping_roll], ignore_index=True)
@@ -178,17 +168,17 @@ y_train = np.concatenate([np.ones(len(train_walking_roll)), np.zeros(len(train_j
 y_test = np.concatenate([np.ones(len(test_walking_roll)), np.zeros(len(test_jumping_roll))])
 
 # Select only the desired columns for X_train and X_test
-X_train_selected = train_features.iloc[:, 1:3]  # Selecting columns 1 and 2 (second and third columns)
-X_test_selected = test_features.iloc[:, 1:3]  # Selecting columns 1 and 2 (second and third columns)
+X_train = train_features.iloc[:, 1:4]  # Selecting columns 1 and 2 (second and third columns)
+X_test = test_features.iloc[:, 1:4]  # Selecting columns 1 and 2 (second and third columns)
 
 # Initialize Logistic Regression model
 logistic_model = LogisticRegression()
 
 # Train the model
-logistic_model.fit(X_train_selected, y_train)
+logistic_model.fit(X_train, y_train)
 
 # Predict on the test set
-y_pred = logistic_model.predict(X_test_selected)
+y_pred = logistic_model.predict(X_test)
 
 # Calculate accuracy
 accuracy = accuracy_score(y_test, y_pred)
