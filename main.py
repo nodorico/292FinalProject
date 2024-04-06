@@ -3,7 +3,8 @@ import numpy as np
 import pandas as pd
 import h5py
 from sklearn.preprocessing import StandardScaler
-
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
 # Load training and testing data from the HDF5 file
 with h5py.File('dataset.h5', 'r') as f:
     train_data = f['dataset/train/train_data'][:]
@@ -145,5 +146,26 @@ test_features_j_normalized = normalize_features(features_j_test)
 # print_summary_statistics(features_w_train, "Original Walking Training Features Summary Statistics")
 # print_summary_statistics(train_features_w_normalized, "Normalized Walking Training Features Summary Statistics")
 #end of step 5
+
+# Step 6
+# Combine features and labels for training and testing sets
+X_train = pd.concat([train_features_w_normalized, train_features_j_normalized], ignore_index=True)
+y_train = np.concatenate([np.ones(len(train_features_w_normalized)), np.zeros(len(train_features_j_normalized))])
+
+X_test = pd.concat([test_features_w_normalized, test_features_j_normalized], ignore_index=True)
+y_test = np.concatenate([np.ones(len(test_features_w_normalized)), np.zeros(len(test_features_j_normalized))])
+
+# Initialize Logistic Regression model
+logistic_model = LogisticRegression()
+
+# Train the model
+logistic_model.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = logistic_model.predict(X_test)
+
+# Calculate accuracy
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy on the test set:", accuracy)
 
 plt.show()
