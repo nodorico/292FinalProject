@@ -54,7 +54,6 @@ np.random.shuffle(segmented)
 train_size = int(0.9 * len(segmented))
 train_segments = segmented[:train_size]
 test_segments = segmented[train_size:]
-print(len(segmented))
 
 # Concatenate the segments into train and test data arrays
 train_data = np.concatenate([segment.values for segment in train_segments])

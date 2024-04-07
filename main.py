@@ -6,6 +6,8 @@ import scipy
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
+from sklearn.model_selection import cross_val_score
+
 # Load training and testing data from the HDF5 file
 with h5py.File('dataset.h5', 'r') as f:
     train_data = f['dataset/train/train_data'][:]
@@ -13,15 +15,15 @@ with h5py.File('dataset.h5', 'r') as f:
 
 # Separate walking and jumping data for training and testing sets
 train_labels = train_data[:, -1]
-train_walking_data = train_data[train_labels == 1][:, :-1]  # Assuming 1 corresponds to walking
-train_jumping_data = train_data[train_labels == 0][:, :-1]  # Assuming 0 corresponds to jumping
+train_walking_data = train_data[train_labels == 1][:, :-1]
+train_jumping_data = train_data[train_labels == 0][:, :-1]
 
 test_labels = test_data[:, -1]
-test_walking_data = test_data[test_labels == 1][:, :-1]    # Assuming 1 corresponds to walking
+test_walking_data = test_data[test_labels == 1][:, :-1]
 test_jumping_data = test_data[test_labels == 0][:, :-1]
 
 # Create rolling mean dataset for visualization
-windowSize = 350
+windowSize = 500
 
 train_walking_roll = pd.DataFrame(train_walking_data).rolling(windowSize).mean().dropna()
 train_jumping_roll = pd.DataFrame(train_jumping_data).rolling(windowSize).mean().dropna()
@@ -43,7 +45,7 @@ test_walking_normalized = scaler.fit_transform(test_walking_roll)
 test_jumping_normalized = scaler.fit_transform(test_jumping_roll)
 
 # Create subplots for X, Y, and Z axes
-fig, axs = plt.subplots(4, 2, figsize=(50, 30))
+fig, axs = plt.subplots(4, 2, figsize=(20, 20))
 
 axs[0, 0].plot(train_walking_normalized[:, 0], label='Walking', color='blue')
 axs[0, 0].plot(train_jumping_normalized[:, 0], label='Jumping', color='orange')
@@ -129,6 +131,8 @@ features_jtr = np.array([extract_features(segment) for segment in train_jumping_
 features_wte = np.array([extract_features(segment) for segment in test_walking_normalized])
 features_jte = np.array([extract_features(segment) for segment in test_jumping_normalized])
 
+train_features_j_normalized = normalize_features(features_j_train)
+test_features_j_normalized = normalize_features(features_j_test)
 
 # Normalize features
 w_n_train = scaler.fit_transform(features_wtr)
@@ -147,10 +151,15 @@ X_train = np.concatenate((w_n_train, j_n_train))
 y_train = np.concatenate((np.ones(len(w_n_train)), np.zeros(len(j_n_train))))
 X_test = np.concatenate((w_n_test, j_n_test))
 y_test = np.concatenate((np.ones(len(w_n_test)), np.zeros(len(j_n_test))))
+# Select only the desired columns for X_train and X_test
+X_train_selected = train_features.iloc[:, 2:4]
+X_test_selected = test_features.iloc[:, 2:4]
 
 # Train a logistic regression model
 model = LogisticRegression()
 model.fit(X_train, y_train)
+# Initialize Logistic Regression model
+logistic_model = LogisticRegression(warm_start=True)
 
 # Make predictions
 y_pred = model.predict(X_test)
@@ -164,3 +173,17 @@ print(f'Accuracy: {accuracy}')
 #____________________________________________________________________________________________________
 
 # plt.show()
+# Define a range of values for cv
+cv_scores = cross_val_score(logistic_model, X_train_selected, y_train, cv=100)
+
+# Plot accuracy over iterations
+plt.figure(figsize=(30, 8))
+plt.plot(np.arange(1, 101), cv_scores, marker='o')
+plt.title('Accuracy of Logistic Regression (Cross-Validation)')
+plt.xlabel('Iteration')
+plt.ylabel('Accuracy')
+plt.xticks(np.arange(1, 101))
+plt.grid(True)
+plt.show()
+
+print(np.mean(cv_scores))
