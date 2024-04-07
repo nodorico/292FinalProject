@@ -115,7 +115,7 @@ print("Shape of train_walking_data:", train_walking_data.shape)
 print("Shape of train_walking_roll:", train_walking_roll.shape)
 print("Shape of train_walking_normalized:", train_walking_normalized.shape)
 
-#grapher(train_walking_data, train_jumping_data, test_walking_data, test_jumping_data)
+grapher(train_walking_data, train_jumping_data, test_walking_data, test_jumping_data)
 
 
 
@@ -139,11 +139,11 @@ def rollingGrapher(windowSize):
 
     grapher(train_walking_roll, train_jumping_roll, test_walking_roll, test_jumping_roll)
 
-# rollingGrapher(10)
-# rollingGrapher(50)
-# rollingGrapher(100)
-# rollingGrapher(500)
-# rollingGrapher(1000)
+rollingGrapher(10)
+rollingGrapher(50)
+rollingGrapher(100)
+rollingGrapher(500)
+rollingGrapher(1000)
 
 fig = plt.figure(figsize=(20, 20))
 ax = fig.add_subplot(111, projection='3d')
