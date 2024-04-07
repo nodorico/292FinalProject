@@ -122,6 +122,7 @@ features_w_train['min'] = train_walking_roll.min()
 features_w_train['variance'] = train_walking_roll.var()
 features_w_train['skewness'] = train_walking_roll.skew()
 features_w_train['kurtosis'] = train_walking_roll.kurt()
+# features_w_train['rms'] = np.sqrt((train_walking_roll**2).mean())
 
 features_w_test = pd.DataFrame(columns=['mean', 'std', 'max', 'min', 'variance', 'skewness', 'kurtosis'])
 
@@ -197,4 +198,4 @@ y_pred = logistic_model.predict(X_test_selected)
 accuracy = accuracy_score(y_test, y_pred)
 print("Accuracy on the test set:", accuracy)
 
-plt.show()
+# plt.show()
