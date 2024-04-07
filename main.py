@@ -20,7 +20,7 @@ test_walking_data = test_data[test_labels == 1][:, :-1]    # Assuming 1 correspo
 test_jumping_data = test_data[test_labels == 0][:, :-1]
 
 # Create rolling mean dataset for visualization
-windowSize = 500
+windowSize = 1000
 
 train_walking_roll = pd.DataFrame(train_walking_data).rolling(windowSize).mean().dropna()
 train_jumping_roll = pd.DataFrame(train_jumping_data).rolling(windowSize).mean().dropna()
@@ -198,4 +198,4 @@ y_pred = logistic_model.predict(X_test_selected)
 accuracy = accuracy_score(y_test, y_pred)
 print("Accuracy on the test set:", accuracy)
 
-# plt.show()
+plt.show()
