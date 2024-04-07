@@ -20,7 +20,7 @@ test_walking_data = test_data[test_labels == 1][:, :-1]    # Assuming 1 correspo
 test_jumping_data = test_data[test_labels == 0][:, :-1]
 
 # Create rolling mean dataset for visualization
-windowSize = 350
+windowSize = 500
 
 train_walking_roll = pd.DataFrame(train_walking_data).rolling(windowSize).mean().dropna()
 train_jumping_roll = pd.DataFrame(train_jumping_data).rolling(windowSize).mean().dropna()
@@ -152,8 +152,6 @@ features_j_test['min'] = test_jumping_roll.min()
 features_j_test['variance'] = test_jumping_roll.var()
 features_j_test['skewness'] = test_jumping_roll.skew()
 features_j_test['kurtosis'] = test_jumping_roll.kurt()
-
-
 
 
 train_features_w_normalized = normalize_features(features_w_train)
