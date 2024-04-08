@@ -4,8 +4,7 @@ import pandas as pd
 import h5py
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score
-from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import learning_curve
 
 # Load training and testing data from the HDF5 file
 with h5py.File('dataset.h5', 'r') as f:
@@ -191,16 +190,30 @@ X_test_selected = test_features.iloc[:, 2:4]
 
 # Initialize Logistic Regression model
 logistic_model = LogisticRegression(warm_start=True)
+logistic_model.fit(X_train_selected,y_train)
 
-logistic_model.fit(X_train_selected, y_train)
+train_sizes, train_scores, test_scores = learning_curve(logistic_model, X_train_selected, y_train, cv=5)
 
-# Predictions
-y_pred_train = logistic_model.predict(X_train_selected)
-y_pred_test = logistic_model.predict(X_test_selected)
+train_scores_mean = np.mean(train_scores, axis=1)
+train_scores_std = np.std(train_scores, axis=1)
+test_scores_mean = np.mean(test_scores, axis=1)
+test_scores_std = np.std(test_scores, axis=1)
 
-# Evaluate the model
-train_accuracy = accuracy_score(y_train, y_pred_train)
-test_accuracy = accuracy_score(y_test, y_pred_test)
+plt.figure()
+plt.title("Linear Regression Learning Curve")
+plt.xlabel("Training examples")
+plt.ylabel("Score")
+plt.grid()
 
-print("Train Accuracy:", train_accuracy)
-print("Test Accuracy:", test_accuracy)
+plt.fill_between(train_sizes, train_scores_mean - train_scores_std,
+                 train_scores_mean + train_scores_std, alpha=0.1,
+                 color="r")
+plt.fill_between(train_sizes, test_scores_mean - test_scores_std,
+                 test_scores_mean + test_scores_std, alpha=0.1, color="g")
+plt.plot(train_sizes, train_scores_mean, 'o-', color="r",
+         label="Training score")
+plt.plot(train_sizes, test_scores_mean, 'o-', color="g",
+         label="Cross-validation score")
+
+plt.legend(loc="best")
+plt.show()
