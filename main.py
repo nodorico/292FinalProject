@@ -25,10 +25,10 @@ test_jumping_data = test_data[test_labels == 0][:, :-1]
 # Create rolling mean dataset for visualization
 windowSize = 500
 
-train_walking_roll = pd.DataFrame(train_walking_data).rolling(windowSize).mean().dropna()
-train_jumping_roll = pd.DataFrame(train_jumping_data).rolling(windowSize).mean().dropna()
-test_walking_roll = pd.DataFrame(test_walking_data).rolling(windowSize).mean().dropna()
-test_jumping_roll = pd.DataFrame(test_jumping_data).rolling(windowSize).mean().dropna()
+train_walking_roll = pd.DataFrame(train_walking_data).rolling(windowSize).median().dropna()
+train_jumping_roll = pd.DataFrame(train_jumping_data).rolling(windowSize).median().dropna()
+test_walking_roll = pd.DataFrame(test_walking_data).rolling(windowSize).median().dropna()
+test_jumping_roll = pd.DataFrame(test_jumping_data).rolling(windowSize).median().dropna()
 
 train_walking_roll = train_walking_roll.iloc[:,]
 train_jumping_roll = train_jumping_roll.iloc[:,]
@@ -174,15 +174,15 @@ print(f'Accuracy: {accuracy}')
 
 # plt.show()
 # Define a range of values for cv
-cv_scores = cross_val_score(logistic_model, X_train_selected, y_train, cv=100)
+cv_scores = cross_val_score(logistic_model, X_train_selected, y_train, cv=4)
 
 # Plot accuracy over iterations
 plt.figure(figsize=(30, 8))
-plt.plot(np.arange(1, 101), cv_scores, marker='o')
+plt.plot(np.arange(1, 5), cv_scores, marker='o')
 plt.title('Accuracy of Logistic Regression (Cross-Validation)')
 plt.xlabel('Iteration')
 plt.ylabel('Accuracy')
-plt.xticks(np.arange(1, 101))
+plt.xticks(np.arange(1, 5))
 plt.grid(True)
 plt.show()
 
