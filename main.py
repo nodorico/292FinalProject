@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import h5py
-import scipy
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
@@ -23,7 +22,7 @@ test_walking_data = test_data[test_labels == 1][:, :-1]
 test_jumping_data = test_data[test_labels == 0][:, :-1]
 
 # Create rolling mean dataset for visualization
-windowSize = 500
+windowSize = 100
 
 train_walking_roll = pd.DataFrame(train_walking_data).rolling(windowSize).median().dropna()
 train_jumping_roll = pd.DataFrame(train_jumping_data).rolling(windowSize).median().dropna()
@@ -110,80 +109,101 @@ axs[3, 1].set_ylabel('Acceleration')
 axs[3, 1].legend()
 
 #Step 5 below:
+def normalize_features(df):
+    scaler = StandardScaler()
+    normalized_data = scaler.fit_transform(df)
+    normalized_df = pd.DataFrame(normalized_data, columns=df.columns)
+    return normalized_df
 
-#make a function to extract features from the segments. The features i want to extract are mean, std, max, min, variance, skewness, kurtosis, sma, autocorrelation, and cross-axis correlation
-def extract_features(segment):
-    features = [
-        np.max(segment),
-        np.min(segment),
-        np.ptp(segment),
-        np.mean(segment),
-        np.median(segment),
-        np.var(segment),
-        np.std(segment),
-        np.mean(np.absolute(segment - np.mean(segment)))
-    ]
-    return features
+features_w_train = pd.DataFrame(columns=['mean', 'std', 'max', 'min', 'variance', 'skewness', 'kurtosis', 'range', 'median', 'rms'])
 
-# Extract features for all segments
-features_wtr = np.array([extract_features(segment) for segment in train_walking_normalized])
-features_jtr = np.array([extract_features(segment) for segment in train_jumping_normalized])
-features_wte = np.array([extract_features(segment) for segment in test_walking_normalized])
-features_jte = np.array([extract_features(segment) for segment in test_jumping_normalized])
+features_w_train['mean'] = train_walking_roll.mean()
+features_w_train['std'] = train_walking_roll.std()
+features_w_train['max'] = train_walking_roll.max()
+features_w_train['min'] = train_walking_roll.min()
+features_w_train['variance'] = train_walking_roll.var()
+features_w_train['skewness'] = train_walking_roll.skew()
+features_w_train['kurtosis'] = train_walking_roll.kurt()
+features_w_train['range'] = train_walking_roll.max() - train_walking_roll.min()
+features_w_train['median'] = train_walking_roll.median()
+features_w_train['rms'] = np.sqrt(np.mean(train_walking_roll**2))
+
+
+features_w_test = pd.DataFrame(columns=['mean', 'std', 'max', 'min', 'variance', 'skewness', 'kurtosis', 'range', 'median', 'rms'])
+
+features_w_test['mean'] = test_walking_roll.mean()
+features_w_test['std'] = test_walking_roll.std()
+features_w_test['max'] = test_walking_roll.max()
+features_w_test['min'] = test_walking_roll.min()
+features_w_test['variance'] = test_walking_roll.var()
+features_w_test['skewness'] = test_walking_roll.skew()
+features_w_test['kurtosis'] = test_walking_roll.kurt()
+features_w_test['range'] = test_walking_roll.max() - test_walking_roll.min()
+features_w_test['median'] = test_walking_roll.median()
+features_w_test['rms'] = np.sqrt(np.mean(test_walking_roll**2))
+
+features_j_train = pd.DataFrame(columns=['mean', 'std', 'max', 'min', 'variance', 'skewness', 'kurtosis', 'range', 'median', 'rms'])
+
+features_j_train['mean'] = train_jumping_roll.mean()
+features_j_train['std'] = train_jumping_roll.std()
+features_j_train['max'] = train_jumping_roll.max()
+features_j_train['min'] = train_jumping_roll.min()
+features_j_train['variance'] = train_jumping_roll.var()
+features_j_train['skewness'] = train_jumping_roll.skew()
+features_j_train['kurtosis'] = train_jumping_roll.kurt()
+features_j_train['range'] = train_jumping_roll.max() - train_jumping_roll.min()
+features_j_train['median'] = train_jumping_roll.median()
+features_j_train['rms'] = np.sqrt(np.mean(train_jumping_roll**2))
+
+features_j_test = pd.DataFrame(columns=['mean', 'std', 'max', 'min', 'variance', 'skewness', 'kurtosis', 'range', 'median', 'rms'])
+
+features_j_test['mean'] = test_jumping_roll.mean()
+features_j_test['std'] = test_jumping_roll.std()
+features_j_test['max'] = test_jumping_roll.max()
+features_j_test['min'] = test_jumping_roll.min()
+features_j_test['variance'] = test_jumping_roll.var()
+features_j_test['skewness'] = test_jumping_roll.skew()
+features_j_test['kurtosis'] = test_jumping_roll.kurt()
+features_j_test['range'] = test_jumping_roll.max() - test_jumping_roll.min()
+features_j_test['median'] = test_jumping_roll.median()
+features_j_test['rms'] = np.sqrt(np.mean(test_jumping_roll**2))
+
+
+train_features_w_normalized = normalize_features(features_w_train)
+test_features_w_normalized = normalize_features(features_w_test)
 
 train_features_j_normalized = normalize_features(features_j_train)
 test_features_j_normalized = normalize_features(features_j_test)
-
-# Normalize features
-w_n_train = scaler.fit_transform(features_wtr)
-j_n_train = scaler.fit_transform(features_jtr)
-w_n_test = scaler.fit_transform(features_wte)
-j_n_test = scaler.fit_transform(features_jte)
+# Step 6
 
 
+# Concatenate DataFrames with continuous index
+train_features = pd.concat([train_walking_roll, train_jumping_roll], ignore_index=True)
+test_features = pd.concat([test_walking_roll, test_jumping_roll], ignore_index=True)
 
-#____________________________________________________________________________________
+# Calculate labels
+y_train = np.concatenate([np.ones(len(train_walking_roll)), np.zeros(len(train_jumping_roll))])
+y_test = np.concatenate([np.ones(len(test_walking_roll)), np.zeros(len(test_jumping_roll))])
 
-#Step 6 below:
-
-# Create training and testing sets
-X_train = np.concatenate((w_n_train, j_n_train))
-y_train = np.concatenate((np.ones(len(w_n_train)), np.zeros(len(j_n_train))))
-X_test = np.concatenate((w_n_test, j_n_test))
-y_test = np.concatenate((np.ones(len(w_n_test)), np.zeros(len(j_n_test))))
 # Select only the desired columns for X_train and X_test
 X_train_selected = train_features.iloc[:, 2:4]
 X_test_selected = test_features.iloc[:, 2:4]
 
-# Train a logistic regression model
-model = LogisticRegression()
-model.fit(X_train, y_train)
 # Initialize Logistic Regression model
 logistic_model = LogisticRegression(warm_start=True)
 
-# Make predictions
-y_pred = model.predict(X_test)
-#do accuracy test for the model
-accuracy = accuracy_score(y_test, y_pred)
-print(f'Accuracy: {accuracy}')
+logistic_model.fit(X_train_selected, y_train)
 
-# _____________________________________________________
+# Predictions
+y_pred_train = logistic_model.predict(X_train_selected)
+y_pred_test = logistic_model.predict(X_test_selected)
+
+# Evaluate the model
+train_accuracy = accuracy_score(y_train, y_pred_train)
+test_accuracy = accuracy_score(y_test, y_pred_test)
+
+print("Train Accuracy:", train_accuracy)
+print("Test Accuracy:", test_accuracy)
 
 
-#____________________________________________________________________________________________________
 
-# plt.show()
-# Define a range of values for cv
-cv_scores = cross_val_score(logistic_model, X_train_selected, y_train, cv=4)
-
-# Plot accuracy over iterations
-plt.figure(figsize=(30, 8))
-plt.plot(np.arange(1, 5), cv_scores, marker='o')
-plt.title('Accuracy of Logistic Regression (Cross-Validation)')
-plt.xlabel('Iteration')
-plt.ylabel('Accuracy')
-plt.xticks(np.arange(1, 5))
-plt.grid(True)
-plt.show()
-
-print(np.mean(cv_scores))

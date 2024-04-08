@@ -1,13 +1,13 @@
 import pandas as pd
 import tkinter as tk
 from tkinter import filedialog, messagebox
-from main import logistic_model, windowSize, scaler, normalize_features
+from main import logistic_model, windowSize, normalize_features
 import numpy as np
 
 
 def preprocess_and_predict(df, model, window_size=500):
 
-    roll_data = pd.DataFrame(df).rolling(window_size).mean().dropna()
+    roll_data = pd.DataFrame(df).rolling(window_size).median().dropna()
 
     roll_data = roll_data.iloc[:, ]
 
@@ -15,7 +15,7 @@ def preprocess_and_predict(df, model, window_size=500):
     # Normalize the data
     # norm_data = scaler.fit_transform(roll_data)
 
-    features = pd.DataFrame(columns=['mean', 'std', 'max', 'min', 'variance', 'skewness', 'kurtosis'])
+    features = pd.DataFrame(columns=['mean', 'std', 'max', 'min', 'variance', 'skewness', 'kurtosis', 'range', 'median', 'rms'])
 
     features['mean'] = df.mean()
     features['std'] = df.std()
@@ -24,10 +24,13 @@ def preprocess_and_predict(df, model, window_size=500):
     features['variance'] = df.var()
     features['skewness'] = df.skew()
     features['kurtosis'] = df.kurt()
+    features['range'] = df.max() - df.min()
+    features['median'] = df.median()
+    features['rms'] = np.sqrt(np.mean(df**2))
 
     normalized_features = normalize_features(features)
 
-    dataNew = roll_data.iloc[:, 1:4]
+    dataNew = roll_data.iloc[:, 2:4]
 
     # Predict using the logistic regression model
     predictions = model.predict(dataNew)
