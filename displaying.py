@@ -20,7 +20,7 @@ test_walking_data = test_data[test_labels == 1][:, :-1]
 test_jumping_data = test_data[test_labels == 0][:, :-1]
 
 # Create rolling mean dataset for visualization
-windowSize = 500
+windowSize = 100
 
 train_walking_roll = pd.DataFrame(train_walking_data).rolling(windowSize).median().dropna()
 train_jumping_roll = pd.DataFrame(train_jumping_data).rolling(windowSize).median().dropna()
@@ -117,21 +117,19 @@ print("Shape of train_walking_normalized:", train_walking_normalized.shape)
 
 grapher(train_walking_data, train_jumping_data, test_walking_data, test_jumping_data)
 
-
-
 train_walking_roll = np.array(train_walking_roll)
 train_jumping_roll = np.array(train_jumping_roll)
 test_walking_roll = np.array(test_walking_roll)
 test_jumping_roll = np.array(test_jumping_roll)
 
 #grapher(train_walking_roll, train_jumping_roll, test_walking_roll, test_jumping_roll)
-#grapher(train_walking_normalized, train_jumping_normalized, test_walking_normalized, test_jumping_normalized)
+grapher(train_walking_normalized, train_jumping_normalized, test_walking_normalized, test_jumping_normalized)
 
 def rollingGrapher(windowSize):
-    train_walking_roll = pd.DataFrame(train_walking_data).rolling(windowSize).mean().dropna()
-    train_jumping_roll = pd.DataFrame(train_jumping_data).rolling(windowSize).mean().dropna()
-    test_walking_roll = pd.DataFrame(test_walking_data).rolling(windowSize).mean().dropna()
-    test_jumping_roll = pd.DataFrame(test_jumping_data).rolling(windowSize).mean().dropna()
+    train_walking_roll = pd.DataFrame(train_walking_data).rolling(windowSize).median().dropna()
+    train_jumping_roll = pd.DataFrame(train_jumping_data).rolling(windowSize).median().dropna()
+    test_walking_roll = pd.DataFrame(test_walking_data).rolling(windowSize).median().dropna()
+    test_jumping_roll = pd.DataFrame(test_jumping_data).rolling(windowSize).median().dropna()
     train_walking_roll = np.array(train_walking_roll)
     train_jumping_roll = np.array(train_jumping_roll)
     test_walking_roll = np.array(test_walking_roll)
@@ -139,7 +137,7 @@ def rollingGrapher(windowSize):
 
     grapher(train_walking_roll, train_jumping_roll, test_walking_roll, test_jumping_roll)
 
-rollingGrapher(10)
+#rollingGrapher(10)
 rollingGrapher(50)
 rollingGrapher(100)
 rollingGrapher(500)
