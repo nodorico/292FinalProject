@@ -5,7 +5,7 @@ from main import logistic_model, windowSize, normalize_features
 import numpy as np
 
 
-def preprocess_and_predict(df, model, window_size=500):
+def preprocess_and_predict(df, model, window_size=100):
 
     roll_data = pd.DataFrame(df).rolling(window_size).median().dropna()
 

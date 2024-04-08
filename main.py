@@ -204,6 +204,3 @@ test_accuracy = accuracy_score(y_test, y_pred_test)
 
 print("Train Accuracy:", train_accuracy)
 print("Test Accuracy:", test_accuracy)
-
-
-
